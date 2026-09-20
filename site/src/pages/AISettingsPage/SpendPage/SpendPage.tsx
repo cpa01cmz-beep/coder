@@ -20,11 +20,13 @@ import { useClientFilterMenu } from "#/pages/AIBridgePage/filters/ClientFilter";
 import { useModelFilterMenu } from "#/pages/AIBridgePage/filters/ModelFilter";
 import { useProviderFilterMenu } from "#/pages/AIBridgePage/filters/ProviderFilter";
 import { getAIBridgePermissions } from "#/pages/AIBridgePage/getAIBridgePermissions";
-import { selectModelOrganization } from "#/pages/AISettingsPage/ModelsPage/organizationModels";
+import {
+	modelOrganizationSearchParam,
+	selectModelOrganization,
+} from "#/pages/AISettingsPage/ModelsPage/organizationModels";
 import { pageTitle } from "#/utils/page";
 import { SpendPageView } from "./SpendPageView";
 
-const organizationSearchParam = "organization";
 const startDateSearchParam = "startDate";
 const endDateSearchParam = "endDate";
 
@@ -132,7 +134,7 @@ const SpendPage: FC<SpendPageProps> = ({ now }) => {
 	});
 	const organizationSelection = selectModelOrganization(
 		organizationsQuery.data ?? [],
-		searchParams.get(organizationSearchParam),
+		searchParams.get(modelOrganizationSearchParam),
 	);
 	// A requested organization the viewer cannot see gets a warning, not
 	// another organization's spend.
@@ -233,7 +235,7 @@ const SpendPage: FC<SpendPageProps> = ({ now }) => {
 				organizations={organizationsQuery.data ?? []}
 				organization={organization}
 				onOrganizationChange={(next) =>
-					setFilterParams({ [organizationSearchParam]: next.name })
+					setFilterParams({ [modelOrganizationSearchParam]: next.name })
 				}
 				isOrganizationsLoading={organizationsQuery.isLoading}
 				organizationsError={organizationsQuery.error}

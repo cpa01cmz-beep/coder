@@ -85,6 +85,10 @@ const AISettingsSidebarView: FC<AISettingsSidebarViewProps> = ({
 }) => {
 	const [searchParams] = useSearchParams();
 	const organizationName = searchParams.get(modelOrganizationSearchParam);
+	const spendPath = organizationScopedPath(
+		"/ai/settings/spend",
+		organizationName,
+	);
 	const modelsPath = organizationScopedPath(
 		"/ai/settings/models",
 		organizationName,
@@ -111,7 +115,7 @@ const AISettingsSidebarView: FC<AISettingsSidebarViewProps> = ({
 					</SidebarNavItem>
 				)}
 				{canViewAISpend && (
-					<SidebarNavItem href="/ai/settings/spend">Spend</SidebarNavItem>
+					<SidebarNavItem href={spendPath}>Spend</SidebarNavItem>
 				)}
 				{permissions.viewAIGatewayKeys && (
 					<SidebarNavItem href="/ai/settings/gateway-keys">

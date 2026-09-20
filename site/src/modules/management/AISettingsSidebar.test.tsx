@@ -65,11 +65,12 @@ it("links organization group member readers to the Spend page", async () => {
 			{ path: "/ai/settings", element: <AISettingsSidebar /> },
 			{ path: "/ai/settings/spend", element: <div /> },
 		],
-		{ initialEntries: ["/ai/settings"] },
+		{ initialEntries: ["/ai/settings?org=second"] },
 	);
 	renderWithRouter(router);
 	await user.click(await screen.findByRole("link", { name: "Spend" }));
 	expect(router.state.location.pathname).toBe("/ai/settings/spend");
+	expect(router.state.location.search).toBe("?org=second");
 });
 
 // The organization query keeps its cached result once disabled, so the link

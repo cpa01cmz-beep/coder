@@ -142,7 +142,7 @@ it("requests the default organization and switches organizations from the first 
 			expect.objectContaining({ ...period, offset: 0 }),
 		),
 	);
-	expect(searchParam(router, "organization")).toBe(MockOrganization2.name);
+	expect(searchParam(router, "org")).toBe(MockOrganization2.name);
 	expect(searchParam(router, "page")).toBeNull();
 });
 
@@ -159,9 +159,7 @@ it("requests the server's budget period when the URL has no dates", async () => 
 
 it("requests no spend for a denied organization until another one is picked", async () => {
 	const user = userEvent.setup();
-	const { router, spendSpy } = renderSpend(
-		`${initialSearch}&organization=missing`,
-	);
+	const { router, spendSpy } = renderSpend(`${initialSearch}&org=missing`);
 	await screen.findByRole("alert");
 	expect(spendSpy).not.toHaveBeenCalled();
 
@@ -179,7 +177,7 @@ it("requests no spend for a denied organization until another one is picked", as
 		MockOrganization.id,
 		expect.anything(),
 	);
-	expect(searchParam(router, "organization")).toBe(MockOrganization2.name);
+	expect(searchParam(router, "org")).toBe(MockOrganization2.name);
 });
 
 it("applies a date preset and resets pagination", async () => {

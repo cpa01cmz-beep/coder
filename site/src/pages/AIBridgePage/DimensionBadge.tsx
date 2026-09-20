@@ -18,7 +18,10 @@ type DimensionBadgeProps = {
 	noun: string;
 };
 
-/** Renders nothing for an empty list. */
+/**
+ * One item renders as a labeled badge; several collapse into a count badge
+ * whose tooltip lists them.
+ */
 export const DimensionBadge: FC<DimensionBadgeProps> = ({ items, noun }) => {
 	if (items.length === 0) {
 		return null;
