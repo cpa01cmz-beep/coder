@@ -25,16 +25,6 @@ import {
 
 const FILTER_WIDTH = 150;
 
-// A maximum-length range of local calendar days that crosses a fall
-// daylight-saving transition runs an hour past the endpoint's limit.
-export const clampSpendPeriod = (range: DateRangeValue): DateRangeValue => {
-	const limit =
-		range.startDate.getTime() + MaxAISpendPeriodDays * 24 * 60 * 60 * 1000;
-	return range.endDate.getTime() > limit
-		? { startDate: range.startDate, endDate: new Date(limit) }
-		: range;
-};
-
 export type SpendFilterMenus = {
 	provider: ProviderFilterMenu;
 	model: ModelFilterMenu;
@@ -94,7 +84,7 @@ export const SpendFilters: FC<SpendFiltersProps> = ({
 				<DateRangePicker
 					now={now}
 					value={dateRange}
-					onChange={(value) => onDateRangeChange(clampSpendPeriod(value))}
+					onChange={onDateRangeChange}
 					maxDays={MaxAISpendPeriodDays}
 					minDate={minDate}
 					disabled={isReportLoading}

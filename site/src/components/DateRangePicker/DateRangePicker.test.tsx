@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { DateRangePicker } from "./DateRangePicker";
 
 it("restarts the calendar selection when a range exceeds maxDays", async () => {
@@ -27,6 +27,61 @@ it("restarts the calendar selection when a range exceeds maxDays", async () => {
 	expect(onChange).toHaveBeenCalledWith({
 		startDate: new Date(2025, 2, 12),
 		endDate: new Date(2025, 2, 15),
+	});
+});
+
+describe("maxDays across a daylight-saving transition", () => {
+	beforeAll(() => {
+		vi.stubEnv("TZ", "America/New_York");
+	});
+
+	afterAll(() => {
+		vi.unstubAllEnvs();
+	});
+
+	// Dates are built inside the test so they use the stubbed zone.
+	it.each([
+		{
+			name: "restarts on the day that would run an hour past the limit",
+			startMonth: 9,
+			trigger: /Oct 10, 2025/,
+			lastDay: /November 9th, 2025/,
+			commits: false,
+		},
+		{
+			name: "allows the full count in standard time",
+			startMonth: 10,
+			trigger: /Nov 10, 2025/,
+			lastDay: /December 10th, 2025/,
+			commits: true,
+		},
+	])("$name", async ({ startMonth, trigger, lastDay, commits }) => {
+		const user = userEvent.setup();
+		const onChange = vi.fn();
+		render(
+			<DateRangePicker
+				now={new Date(2025, startMonth + 1, 15, 12)}
+				maxDays={31}
+				value={{
+					startDate: new Date(2025, startMonth, 10),
+					endDate: new Date(2025, startMonth, 11),
+				}}
+				onChange={onChange}
+			/>,
+		);
+
+		await user.click(screen.getByRole("button", { name: trigger }));
+		await user.click(await screen.findByRole("button", { name: lastDay }));
+		await user.click(screen.getByRole("button", { name: "Apply" }));
+
+		if (commits) {
+			expect(onChange).toHaveBeenCalledWith({
+				startDate: new Date(2025, startMonth, 10),
+				endDate: new Date(2025, startMonth + 1, 11),
+			});
+		} else {
+			expect(onChange).not.toHaveBeenCalled();
+		}
 	});
 });
 

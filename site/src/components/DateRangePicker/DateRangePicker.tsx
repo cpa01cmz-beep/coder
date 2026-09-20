@@ -163,6 +163,27 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 		setSelection(range);
 	};
 
+	// maxDays counts local calendar days, but the committed boundary is an
+	// interval that APIs bound in hours, and a maximal range of local days
+	// that crosses a fall daylight-saving transition runs an hour long. Allow
+	// one day less from such a start rather than trimming the committed range.
+	const selectableDays = (() => {
+		if (maxDays === undefined || !selection?.from) {
+			return maxDays;
+		}
+		const lastDay = dayjs(selection.from)
+			.add(maxDays - 1, "day")
+			.toDate();
+		const { startDate, endDate } = toBoundary(
+			selection.from,
+			lastDay,
+			currentTime,
+		);
+		return dayjs(endDate).diff(startDate, "hour") > maxDays * 24
+			? maxDays - 1
+			: maxDays;
+	})();
+
 	// Sync local selection when the popover opens so it reflects the
 	// latest committed value. Reverse the boundary normalization so
 	// the calendar highlights the correct inclusive dates.
@@ -255,7 +276,9 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 								selected={selection}
 								onSelect={handleCalendarSelect}
 								numberOfMonths={2}
-								max={maxDays === undefined ? undefined : maxDays - 1}
+								max={
+									selectableDays === undefined ? undefined : selectableDays - 1
+								}
 								disabled={
 									minDate === undefined
 										? { after: currentTime }
