@@ -316,8 +316,8 @@ Visibility follows the viewer's role:
 | Readers of an organization's group members           | Each organization's total and per-user spend on the **Spend** page   |
 
 - The **Spend** page under **Admin settings** > **AI** shows total and per-user AI Gateway spend for the selected organization and reporting period.
-  It opens for anyone who can read the organization's group members: Owners, Auditors, Template Admins, User Admins, and their organization-scoped equivalents.
-  Users who can also view AI sessions can filter it by provider, model, and client.
+  You can open it if you can read the organization's group members, as Owners, Auditors, Template Admins, User Admins, and their organization-scoped equivalents can.
+  If you can also view AI sessions, you can filter it by provider, model, and client.
 - The **Groups** page compares each group's spend with the combined limits of
   the members it covers.
 - The **Members** tab of a group reports each member's spend, their budget, and
@@ -338,7 +338,7 @@ endpoint to see a user's current effective group.
 
 ### Spend export
 
-Users who can read group-member data for the organization can export approximate spend for reporting and internal cost allocation.
+If you can read the organization's group members, you can export approximate spend for reporting and internal cost allocation.
 
 ```sh
 curl -H "Coder-Session-Token: $CODER_SESSION_TOKEN" \
